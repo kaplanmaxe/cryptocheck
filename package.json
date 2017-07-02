@@ -1,6 +1,6 @@
 {
   "name": "cryptocheck",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Check prices of cryptocurrencies via command line",
   "main": "dist/index.js",
   "scripts": {

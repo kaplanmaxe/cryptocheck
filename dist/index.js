@@ -36,7 +36,7 @@ _commander2.default.command('gdax [currency]').action(function (currency) {
 // CoinMarketCap
 _commander2.default.command('cmc [currency]').action(function (currency) {
   _CoinMarketCap2.default.getCurrency(currency).then(function (res) {
-    console.log(res.name + ' (' + res.symbol + '): $' + Number(res.price_usd).toFixed(2));
+    console.log(res.name + ' (' + res.symbol + '): $' + res.price_usd);
   }, function (err) {
     console.log(err);
   });

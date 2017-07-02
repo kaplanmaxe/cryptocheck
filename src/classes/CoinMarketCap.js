@@ -13,7 +13,6 @@ export default class CoinMarketCap {
     return new Promise((resolve, reject) => {
       request('https://api.coinmarketcap.com/v1/ticker/', (err, resp, body) => {
         const output = JSON.parse(body);
-        let found = false;
         for (let i = 0; i < output.length; i++) {
           if (output[i].symbol.toUpperCase() === currency.toUpperCase()) {
             resolve(output[i]);

@@ -34,7 +34,6 @@ var CoinMarketCap = function () {
       return new Promise(function (resolve, reject) {
         (0, _request2.default)('https://api.coinmarketcap.com/v1/ticker/', function (err, resp, body) {
           var output = JSON.parse(body);
-          var found = false;
           for (var i = 0; i < output.length; i++) {
             if (output[i].symbol.toUpperCase() === currency.toUpperCase()) {
               resolve(output[i]);
