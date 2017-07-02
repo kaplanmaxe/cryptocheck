@@ -32,3 +32,7 @@ CoinMarketCap.com
 cryptocheck cmc sc
 cryptocheck cmc xrp
 ```
+
+### Development
+
+PRs are more than welcome! Just make sure to run gulp while developing to transpile and follow ESLint rules.

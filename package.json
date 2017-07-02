@@ -1,6 +1,6 @@
 {
   "name": "cryptocheck",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Check prices of cryptocurrencies via command line",
   "main": "dist/index.js",
   "scripts": {
@@ -21,6 +21,9 @@
     "gdax",
     "coinmarketcap"
   ],
+  "bin": {
+    "cryptocheck": "./dist/index.js"
+  },
   "author": "Max Kaplan",
   "license": "ISC",
   "bugs": {
