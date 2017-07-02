@@ -1,0 +1,6 @@
+{
+  "extends": "sourcetoad",
+  "rules": {
+    "no-console": 0
+  }
+}
