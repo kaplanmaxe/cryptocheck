@@ -2,7 +2,7 @@ const gulp = require('gulp');
 const babel = require('gulp-babel');
 
 gulp.task('transpile-module', () => {
-  return gulp.src(['./src/index.js'])
+  return gulp.src(['./src/index.js', './src/CurrencyMap.js'])
     .pipe(babel({ presets: ['es2015'] }))
     .pipe(gulp.dest('./dist/'));
 });
@@ -14,7 +14,7 @@ gulp.task('transpile-classes', () => {
 });
 
 gulp.task('babel-module', () => {
-  return gulp.watch(['./src/index.js'], ['transpile-module']);
+  return gulp.watch(['./src/index.js', './src/CurrencyMap.js'], ['transpile-module']);
 });
 
 gulp.task('babel-classes', () => {

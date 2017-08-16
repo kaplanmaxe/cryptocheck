@@ -14,36 +14,34 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var headers = {
-  'User-Agent': 'request'
-};
-
-var GDAX = function () {
-  function GDAX() {
-    _classCallCheck(this, GDAX);
+var Kraken = function () {
+  function Kraken() {
+    _classCallCheck(this, Kraken);
   }
 
-  _createClass(GDAX, null, [{
+  _createClass(Kraken, null, [{
     key: 'getCurrency',
 
     /**
-     * Calls GDAX API to get price
+     * Gets currency pair price
      *
-     * @param {string} Currency Currency to fetch
-     * @return {Promise}
+     * @param {string} asset Asset to check price of
      */
-    value: function getCurrency(currency) {
-      return new Promise(function (resolve, reject) {
-        (0, _request2.default)({ url: 'https://api.gdax.com/products/' + currency + '-USD/ticker', headers: headers }, function (err, response, body) {
-          if (response.statusCode === 404) reject('Symbol not found on GDAX.');
+    value: function getCurrency(asset) {
+      var currency = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'USD';
+
+      return new Promise(function (resolve) {
+        (0, _request2.default)('https://api.kraken.com/0/public/Ticker?pair=' + asset + currency, function (err, response, body) {
           var output = JSON.parse(body);
-          resolve(output.price);
+          if (output.error.length > 0) return resolve('Asset not found.');
+          // Kraken's output is a little weird. Always take the first object key.
+          resolve(output.result[Object.keys(output.result)[0]].c[0]);
         });
       });
     }
   }]);
 
-  return GDAX;
+  return Kraken;
 }();
 
-exports.default = GDAX;
+exports.default = Kraken;
