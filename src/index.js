@@ -7,19 +7,31 @@ import Kraken from './classes/Kraken';
 
 program.version('1.0.0');
 
+/**
+ * Gets associated data for currency given symbol
+ *
+ * @param  {string} currency Symbol of currency
+ * @param  {string} source gdax|kraken
+ * @return {object}
+ */
+function getCurrencyData(currency, source) {
+  const currencyData = Helpers.mapCurrency(currency);
+  const index = source === 'gdax' ? 0 : currencyData.symbols.length - 1;
+  let symbol = currency;
+  if (currencyData && currencyData.symbols.length > 1) {
+    symbol = currencyData.symbols[index];
+  }
+  return Object.assign({}, currencyData, { symbol });
+}
+
 // GDAX
 program
   .command('gdax [currency]')
   .action(currency => {
-    const currencyData = Helpers.mapCurrency(currency);
-    let symbol = currency;
-    if (currencyData && currencyData.symbols.length > 1) {
-      // Kraken symbol always used at end
-      symbol = currencyData.symbols[currencyData.symbols.length - 1];
-    }
-    GDAX.getCurrency(symbol)
+    const currencyData = getCurrencyData(currency, 'gdax');
+    GDAX.getCurrency(currencyData.symbol)
     .then(res => {
-      console.log(`${currencyData.name} (${symbol.toUpperCase()}): $${Helpers.round(res)}`);
+      console.log(`${currencyData.name} (${currency.toUpperCase()}): $${Helpers.round(res)}`);
     }, err => {
       console.log(err);
     });
@@ -31,23 +43,18 @@ program
   .action(currency => {
     CoinMarketCap.getCurrency(currency)
     .then(res => {
-      console.log(`${res.name} (${res.symbol}): $${Helpers.round(res.price_usd)}`);
+      console.log(`${res.name} (${res.symbol}): $${Helpers.round(res.price_usd)} (${res.percent_change_24h}%)`);
     }, err => {
       console.log(err);
     });
   });
 
-  // CoinMarketCap
+  // Kraken
   program
     .command('kraken [currency]')
     .action(currency => {
-      const currencyData = Helpers.mapCurrency(currency);
-      let symbol = currency;
-      if (currencyData && currencyData.symbols.length > 1) {
-        // Kraken symbol always used at end
-        symbol = currencyData.symbols[currencyData.symbols.length - 1];
-      }
-      Kraken.getCurrency(symbol)
+      const currencyData = getCurrencyData(currency, 'kraken');
+      Kraken.getCurrency(currencyData.symbol)
       .then(res => {
         console.log(`${currencyData.name} (${currency.toUpperCase()}): $${Helpers.round(res)}`);
       }, err => {

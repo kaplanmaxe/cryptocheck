@@ -25,16 +25,28 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _commander2.default.version('1.0.0');
 
-// GDAX
-_commander2.default.command('gdax [currency]').action(function (currency) {
+/**
+ * Gets associated data for currency given symbol
+ *
+ * @param  {string} currency Symbol of currency
+ * @param  {string} source gdax|kraken
+ * @return {object}
+ */
+function getCurrencyData(currency, source) {
   var currencyData = _Helpers2.default.mapCurrency(currency);
+  var index = source === 'gdax' ? 0 : currencyData.symbols.length - 1;
   var symbol = currency;
   if (currencyData && currencyData.symbols.length > 1) {
-    // Kraken symbol always used at end
-    symbol = currencyData.symbols[currencyData.symbols.length - 1];
+    symbol = currencyData.symbols[index];
   }
-  _GDAX2.default.getCurrency(symbol).then(function (res) {
-    console.log(currencyData.name + ' (' + symbol.toUpperCase() + '): $' + _Helpers2.default.round(res));
+  return Object.assign({}, currencyData, { symbol: symbol });
+}
+
+// GDAX
+_commander2.default.command('gdax [currency]').action(function (currency) {
+  var currencyData = getCurrencyData(currency, 'gdax');
+  _GDAX2.default.getCurrency(currencyData.symbol).then(function (res) {
+    console.log(currencyData.name + ' (' + currency.toUpperCase() + '): $' + _Helpers2.default.round(res));
   }, function (err) {
     console.log(err);
   });
@@ -43,21 +55,16 @@ _commander2.default.command('gdax [currency]').action(function (currency) {
 // CoinMarketCap
 _commander2.default.command('cmc [currency]').action(function (currency) {
   _CoinMarketCap2.default.getCurrency(currency).then(function (res) {
-    console.log(res.name + ' (' + res.symbol + '): $' + _Helpers2.default.round(res.price_usd));
+    console.log(res.name + ' (' + res.symbol + '): $' + _Helpers2.default.round(res.price_usd) + ' (' + res.percent_change_24h + '%)');
   }, function (err) {
     console.log(err);
   });
 });
 
-// CoinMarketCap
+// Kraken
 _commander2.default.command('kraken [currency]').action(function (currency) {
-  var currencyData = _Helpers2.default.mapCurrency(currency);
-  var symbol = currency;
-  if (currencyData && currencyData.symbols.length > 1) {
-    // Kraken symbol always used at end
-    symbol = currencyData.symbols[currencyData.symbols.length - 1];
-  }
-  _Kraken2.default.getCurrency(symbol).then(function (res) {
+  var currencyData = getCurrencyData(currency, 'kraken');
+  _Kraken2.default.getCurrency(currencyData.symbol).then(function (res) {
     console.log(currencyData.name + ' (' + currency.toUpperCase() + '): $' + _Helpers2.default.round(res));
   }, function (err) {
     console.log(err);
