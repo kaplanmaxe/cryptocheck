@@ -27,9 +27,14 @@ _commander2.default.version('1.0.0');
 
 // GDAX
 _commander2.default.command('gdax [currency]').action(function (currency) {
-  var symbol = currency.toUpperCase();
+  var currencyData = _Helpers2.default.mapCurrency(currency);
+  var symbol = currency;
+  if (currencyData && currencyData.symbols.length > 1) {
+    // Kraken symbol always used at end
+    symbol = currencyData.symbols[currencyData.symbols.length - 1];
+  }
   _GDAX2.default.getCurrency(symbol).then(function (res) {
-    console.log(GDAX_MAP[symbol] + ' (' + symbol + '): $' + _Helpers2.default.round(res));
+    console.log(currencyData.name + ' (' + symbol.toUpperCase() + '): $' + _Helpers2.default.round(res));
   }, function (err) {
     console.log(err);
   });
@@ -48,8 +53,9 @@ _commander2.default.command('cmc [currency]').action(function (currency) {
 _commander2.default.command('kraken [currency]').action(function (currency) {
   var currencyData = _Helpers2.default.mapCurrency(currency);
   var symbol = currency;
-  if (currencyData.name.toLowerCase() === 'bitcoin') {
-    symbol = currencyData.symbols[1];
+  if (currencyData && currencyData.symbols.length > 1) {
+    // Kraken symbol always used at end
+    symbol = currencyData.symbols[currencyData.symbols.length - 1];
   }
   _Kraken2.default.getCurrency(symbol).then(function (res) {
     console.log(currencyData.name + ' (' + currency.toUpperCase() + '): $' + _Helpers2.default.round(res));

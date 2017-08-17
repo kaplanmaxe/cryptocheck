@@ -35,7 +35,7 @@ var GDAX = function () {
     value: function getCurrency(currency) {
       return new Promise(function (resolve, reject) {
         (0, _request2.default)({ url: 'https://api.gdax.com/products/' + currency + '-USD/ticker', headers: headers }, function (err, response, body) {
-          if (response.statusCode === 404) reject('Symbol not found on GDAX.');
+          if (response.statusCode === 404) reject('Asset not found.');
           var output = JSON.parse(body);
           resolve(output.price);
         });

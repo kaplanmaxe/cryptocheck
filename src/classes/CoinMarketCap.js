@@ -19,7 +19,7 @@ export default class CoinMarketCap {
             break;
           }
         }
-        reject('Symbol not found on CoinMarketCap');
+        reject('Asset not found.');
       });
     });
   }

@@ -11,10 +11,15 @@ program.version('1.0.0');
 program
   .command('gdax [currency]')
   .action(currency => {
-    const symbol = currency.toUpperCase();
+    const currencyData = Helpers.mapCurrency(currency);
+    let symbol = currency;
+    if (currencyData && currencyData.symbols.length > 1) {
+      // Kraken symbol always used at end
+      symbol = currencyData.symbols[currencyData.symbols.length - 1];
+    }
     GDAX.getCurrency(symbol)
     .then(res => {
-      console.log(`${GDAX_MAP[symbol]} (${symbol}): $${Helpers.round(res)}`);
+      console.log(`${currencyData.name} (${symbol.toUpperCase()}): $${Helpers.round(res)}`);
     }, err => {
       console.log(err);
     });
@@ -38,8 +43,9 @@ program
     .action(currency => {
       const currencyData = Helpers.mapCurrency(currency);
       let symbol = currency;
-      if (currencyData.name.toLowerCase() === 'bitcoin') {
-        symbol = currencyData.symbols[1];
+      if (currencyData && currencyData.symbols.length > 1) {
+        // Kraken symbol always used at end
+        symbol = currencyData.symbols[currencyData.symbols.length - 1];
       }
       Kraken.getCurrency(symbol)
       .then(res => {

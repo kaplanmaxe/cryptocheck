@@ -40,7 +40,7 @@ var CoinMarketCap = function () {
               break;
             }
           }
-          reject('Symbol not found on CoinMarketCap');
+          reject('Asset not found.');
         });
       });
     }

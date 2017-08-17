@@ -14,7 +14,7 @@ export default class GDAX {
   static getCurrency(currency) {
     return new Promise((resolve, reject) => {
       request({ url: `https://api.gdax.com/products/${currency}-USD/ticker`, headers }, (err, response, body) => {
-        if (response.statusCode === 404) reject('Symbol not found on GDAX.');
+        if (response.statusCode === 404) reject('Asset not found.');
         const output = JSON.parse(body);
         resolve(output.price);
       });

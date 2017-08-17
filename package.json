@@ -1,6 +1,6 @@
 {
   "name": "cryptocheck",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Check prices of cryptocurrencies via command line",
   "main": "dist/index.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "blockchain",
     "price",
     "gdax",
+    "kraken",
     "coinmarketcap"
   ],
   "bin": {
