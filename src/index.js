@@ -63,31 +63,42 @@ program
     });
 
 
-
 program
   .command('portfolio [fileLocation]')
-  .action(fileLocation => {
-      var fullPath = process.cwd()+'/'+fileLocation;
-      console.log('path :'+fullPath);
-      var fs = require('fs');
+  .option('-m, --market [market]')
+  .action((fileLocation,options) => {
+      const fullPath = process.cwd()+'/'+fileLocation;
+      const market = options.market || 'cmc';
+      let fs = require('fs');
       fs.readFile(fullPath, 'utf8', function (err, data) {
-          if (err) throw err; // we'll not consider error handling for now
-          var obj = JSON.parse(data);
-          var keys = Object.keys(obj);
-          var proms = [];
-          var data = {};
+          if (err) throw err; 
+          const obj = JSON.parse(data);
+          let keys = Object.keys(obj);
+          let proms = [];
+          let portfolioData = {};
           keys.forEach(function(key) {
-              data[key.toUpperCase()] = obj[key];
-              proms.push(CoinMarketCap.getCurrency(key));
+              portfolioData[key.toUpperCase()] = obj[key];
+              proms.push(getCurrecyData(market.toLowerCase(),key));
           }, this);
           Promise.all(proms)
           .then(res =>{
-                showPortfolio(res,data);
+                showPortfolio(res,portfolioData);
           }, err => {
              console.log('Errored '+err);
           });
       });
   });
+
+  function getCurrecyData(market,currency){
+      if(market == 'gdax')
+          return  GDAX.getCurrency(currency);
+      else if(market == 'kraken')
+        return  Kraken.getCurrency(currency);
+      else if(market == 'cmc')
+        return  CoinMarketCap.getCurrency(currency);
+      else
+        return null;
+  }
 
  function showPortfolio(res,obj){
   console.log('--------------------------------------------------------------------------------------------');
@@ -102,6 +113,6 @@ program
   }, this);
   console.log('--------------------------------------------------------------------------------------------');
   console.log(`Total : $${Helpers.round(total)}`);
-  
  }; 
+
 program.parse(process.argv);
