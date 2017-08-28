@@ -1,5 +1,5 @@
 {
-  "extends": "sourcetoad",
+  "extends": "kaplankomputing",
   "rules": {
     "no-console": 0
   }

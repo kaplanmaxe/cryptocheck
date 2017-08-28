@@ -1,2 +1,3 @@
 dist/
 gulpfile.js
+src/CurrencyMap.js
