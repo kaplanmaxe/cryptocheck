@@ -34,6 +34,7 @@ cryptocheck cmc xrp
 ```
 
 Portfolio Check:
+
 Add all your currencies in json file (sample file is in data/portfolio.json), you will overview of your portfolio.
 ```
 cryptocheck portfolio <path-to-json-file>
