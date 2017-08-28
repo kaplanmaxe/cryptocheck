@@ -62,4 +62,46 @@ program
       });
     });
 
+
+
+program
+  .command('portfolio [fileLocation]')
+  .action(fileLocation => {
+      var fullPath = process.cwd()+'/'+fileLocation;
+      console.log('path :'+fullPath);
+      var fs = require('fs');
+      fs.readFile(fullPath, 'utf8', function (err, data) {
+          if (err) throw err; // we'll not consider error handling for now
+          var obj = JSON.parse(data);
+          var keys = Object.keys(obj);
+          var proms = [];
+          var data = {};
+          keys.forEach(function(key) {
+              data[key.toUpperCase()] = obj[key];
+              proms.push(CoinMarketCap.getCurrency(key));
+          }, this);
+          Promise.all(proms)
+          .then(res =>{
+                showPortfolio(res,data);
+          }, err => {
+             console.log('Errored '+err);
+          });
+      });
+  });
+
+ function showPortfolio(res,obj){
+  console.log('--------------------------------------------------------------------------------------------');
+  console.log(`Symbol   Price     Acct. Val     %Change`);
+  console.log('--------------------------------------------------------------------------------------------');
+  let total = 0;
+  res.forEach(function(currency) {
+
+      let currentVal =  Helpers.round( obj[currency.symbol]*currency.price_usd);
+      total+=Number(currentVal);
+      console.log(`${currency.symbol}    $${Helpers.round(currency.price_usd)}    $${currentVal}      $${currency.percent_change_24h}%`);
+  }, this);
+  console.log('--------------------------------------------------------------------------------------------');
+  console.log(`Total : $${Helpers.round(total)}`);
+  
+ }; 
 program.parse(process.argv);
