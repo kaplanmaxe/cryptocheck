@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 'use strict';
+var _fs = require('fs');var _fs2 = _interopRequireDefault(_fs);
 var _commander = require('commander');var _commander2 = _interopRequireDefault(_commander);
 var _Helpers = require('./classes/Helpers');var _Helpers2 = _interopRequireDefault(_Helpers);
 var _GDAX = require('./classes/GDAX');var _GDAX2 = _interopRequireDefault(_GDAX);
@@ -70,8 +71,7 @@ option('-m, --market [market]').
 action(function (fileLocation, options) {
   var fullPath = process.cwd() + '/' + fileLocation;
   var market = options.market || 'cmc';
-  var fs = require('fs');
-  fs.readFile(fullPath, 'utf8', function (err, data) {
+  _fs2.default.readFile(fullPath, 'utf8', function (err, data) {
     if (err) throw err;
     var obj = JSON.parse(data);
     var keys = Object.keys(obj);
@@ -84,36 +84,46 @@ action(function (fileLocation, options) {
     Promise.all(proms).
     then(function (res) {
       showPortfolio(res, portfolioData);
-    }, function (err) {
-      console.log('Errored ' + err);
+    }, function (error) {
+      console.log('Errored ' + error);
     });
   });
 });
 
+/**
+     * Returns appropriate promise as per market.
+     * @param {string} market 
+     * @param {string} currency 
+     */
 function getCurrecyData(market, currency) {
-  if (market == 'gdax')
-  return _GDAX2.default.getCurrency(currency);else
-  if (market == 'kraken')
-  return _Kraken2.default.getCurrency(currency);else
-  if (market == 'cmc')
-  return _CoinMarketCap2.default.getCurrency(currency);else
+  if (market === 'gdax') {
+    return _GDAX2.default.getCurrency(currency);
+  } else if (market === 'kraken') {
+    return _Kraken2.default.getCurrency(currency);
+  } else if (market === 'cmc') {
+    return _CoinMarketCap2.default.getCurrency(currency);
+  }
 
   return null;
 }
 
+/**
+   * Prints portfolio
+   * @param {Array} res : array of dictionaries.
+   * @param {Dictionary} obj : portfolio dictinary.
+   */
 function showPortfolio(res, obj) {
   console.log('--------------------------------------------------------------------------------------------');
   console.log('Symbol   Price     Acct. Val     %Change');
   console.log('--------------------------------------------------------------------------------------------');
   var total = 0;
   res.forEach(function (currency) {
-
     var currentVal = _Helpers2.default.round(obj[currency.symbol] * currency.price_usd);
     total += Number(currentVal);
     console.log(currency.symbol + '    $' + _Helpers2.default.round(currency.price_usd) + '    $' + currentVal + '      $' + currency.percent_change_24h + '%');
-  }, this);
+  });
   console.log('--------------------------------------------------------------------------------------------');
   console.log('Total : $' + _Helpers2.default.round(total));
-};
+}
 
 _commander2.default.parse(process.argv);

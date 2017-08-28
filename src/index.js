@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import fs from 'fs';
 import program from 'commander';
 import Helpers from './classes/Helpers';
 import GDAX from './classes/GDAX';
@@ -66,53 +67,62 @@ program
 program
   .command('portfolio [fileLocation]')
   .option('-m, --market [market]')
-  .action((fileLocation,options) => {
-      const fullPath = process.cwd()+'/'+fileLocation;
+  .action((fileLocation, options) => {
+      const fullPath = `${process.cwd()}/${fileLocation}`;
       const market = options.market || 'cmc';
-      let fs = require('fs');
-      fs.readFile(fullPath, 'utf8', function (err, data) {
-          if (err) throw err; 
+      fs.readFile(fullPath, 'utf8', function(err, data) {
+          if (err) throw err;
           const obj = JSON.parse(data);
-          let keys = Object.keys(obj);
-          let proms = [];
-          let portfolioData = {};
-          keys.forEach(function(key) {
+          const keys = Object.keys(obj);
+          const proms = [];
+          const portfolioData = {};
+          keys.forEach(key => {
               portfolioData[key.toUpperCase()] = obj[key];
-              proms.push(getCurrecyData(market.toLowerCase(),key));
+              proms.push(getCurrecyData(market.toLowerCase(), key));
           }, this);
           Promise.all(proms)
-          .then(res =>{
-                showPortfolio(res,portfolioData);
-          }, err => {
-             console.log('Errored '+err);
+          .then(res => {
+                showPortfolio(res, portfolioData);
+          }, error => {
+             console.log(`Errored ${error}`);
           });
       });
   });
 
-  function getCurrecyData(market,currency){
-      if(market == 'gdax')
-          return  GDAX.getCurrency(currency);
-      else if(market == 'kraken')
-        return  Kraken.getCurrency(currency);
-      else if(market == 'cmc')
-        return  CoinMarketCap.getCurrency(currency);
-      else
-        return null;
+  /**
+   * Returns appropriate promise as per market.
+   * @param {string} market 
+   * @param {string} currency 
+   */
+  function getCurrecyData(market, currency) {
+      if (market === 'gdax') {
+        return GDAX.getCurrency(currency);
+      } else if (market === 'kraken') {
+        return Kraken.getCurrency(currency);
+      } else if (market === 'cmc') {
+        return CoinMarketCap.getCurrency(currency);
+      }
+
+      return null;
   }
 
- function showPortfolio(res,obj){
+  /**
+   * Prints portfolio
+   * @param {Array} res : array of dictionaries.
+   * @param {Dictionary} obj : portfolio dictinary.
+   */
+ function showPortfolio(res, obj) {
   console.log('--------------------------------------------------------------------------------------------');
-  console.log(`Symbol   Price     Acct. Val     %Change`);
+  console.log('Symbol   Price     Acct. Val     %Change');
   console.log('--------------------------------------------------------------------------------------------');
   let total = 0;
-  res.forEach(function(currency) {
-
-      let currentVal =  Helpers.round( obj[currency.symbol]*currency.price_usd);
-      total+=Number(currentVal);
+  res.forEach(currency => {
+      const currentVal = Helpers.round(obj[currency.symbol] * currency.price_usd);
+      total += Number(currentVal);
       console.log(`${currency.symbol}    $${Helpers.round(currency.price_usd)}    $${currentVal}      $${currency.percent_change_24h}%`);
-  }, this);
+  });
   console.log('--------------------------------------------------------------------------------------------');
   console.log(`Total : $${Helpers.round(total)}`);
- }; 
+ }
 
 program.parse(process.argv);
