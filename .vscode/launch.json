@@ -16,7 +16,7 @@
                "--nolazy",
                "--preserve-symlinks"
            ],
-            "args":["portfolio","-m","cmc","src/portfolio.json"]
+            "args":["portfolio","-m","cmc","data/portfolio.json"]
         }
     ]
 }
