@@ -64,31 +64,42 @@ action(function (currency) {
 });
 
 
-
 _commander2.default.
 command('portfolio [fileLocation]').
-action(function (fileLocation) {
+option('-m, --market [market]').
+action(function (fileLocation, options) {
   var fullPath = process.cwd() + '/' + fileLocation;
-  console.log('path :' + fullPath);
+  var market = options.market || 'cmc';
   var fs = require('fs');
   fs.readFile(fullPath, 'utf8', function (err, data) {
-    if (err) throw err; // we'll not consider error handling for now
+    if (err) throw err;
     var obj = JSON.parse(data);
     var keys = Object.keys(obj);
     var proms = [];
-    var data = {};
+    var portfolioData = {};
     keys.forEach(function (key) {
-      data[key.toUpperCase()] = obj[key];
-      proms.push(_CoinMarketCap2.default.getCurrency(key));
+      portfolioData[key.toUpperCase()] = obj[key];
+      proms.push(getCurrecyData(market.toLowerCase(), key));
     }, this);
     Promise.all(proms).
     then(function (res) {
-      showPortfolio(res, data);
+      showPortfolio(res, portfolioData);
     }, function (err) {
       console.log('Errored ' + err);
     });
   });
 });
+
+function getCurrecyData(market, currency) {
+  if (market == 'gdax')
+  return _GDAX2.default.getCurrency(currency);else
+  if (market == 'kraken')
+  return _Kraken2.default.getCurrency(currency);else
+  if (market == 'cmc')
+  return _CoinMarketCap2.default.getCurrency(currency);else
+
+  return null;
+}
 
 function showPortfolio(res, obj) {
   console.log('--------------------------------------------------------------------------------------------');
@@ -103,6 +114,6 @@ function showPortfolio(res, obj) {
   }, this);
   console.log('--------------------------------------------------------------------------------------------');
   console.log('Total : $' + _Helpers2.default.round(total));
-
 };
+
 _commander2.default.parse(process.argv);
