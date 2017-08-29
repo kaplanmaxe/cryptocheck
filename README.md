@@ -1,5 +1,7 @@
 # Cryptocheck
 
+[![Build Status](https://travis-ci.org/kaplanmaxe/cryptocheck.svg?branch=master)](https://travis-ci.org/kaplanmaxe/cryptocheck)
+
 A command line tool to check prices of cryptocurrencies.
 
 ### About
