@@ -1,6 +1,7 @@
 const exec = require('child_process').exec;
 const assert = require('chai').assert;
 const fs = require('fs');
+const lint = require('mocha-eslint');
 
 const sources = ['kraken', 'gdax', 'cmc'];
 const currencies = ['BTC', 'ETH', 'LTC'];
@@ -47,3 +48,8 @@ describe('Test portfolio functionality', () => {
     }).timeout(5000);
   });
 });
+
+lint([
+  'src/**/*.js',
+  '!src/CurrencyMap.js'
+], { timeout: 5000 });
