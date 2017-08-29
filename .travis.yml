@@ -1,6 +1,9 @@
 language: node_js
 node_js:
-  - '6'
+- '6'
 install:
-  - npm install
-  - npm link
+- npm install
+- npm link
+notifications:
+  slack:
+    secure: U9vSUPyC2cU1kAtiJbd9VQIw9c9VRsNKvn7MNNn5uiT61Xh54Cbhbg0oR8hwxn2XTgM7aBZgqmZ56O0Bhvlufc3wpGMVqJef7gQGSgckJvYlvxunOta43+VCCSBd2csLBVfb9JfsgA3ykZwIq/6fJ583tTTR/xS0bdSBxI7v2Zzy7Qdb8Bvbj5uvm9DK1rDEX2nX566vWsRXWyny5s75vyu1pvc6AyinehVRFh78pRiJAepLkDdnotEZnh+cenodlpYMS/QX6ORKPdWlVZ7n1kJ0+QQHSNQlGLjrHGgvESJC73QT33+nCUzNU0PTvTqgt7LnpEBUCkX/KSZ95W8nvfAex429rlDCGEe7YmHSqIIxc3qY6hSedqViOdFJHHLpldoxSvUBbQmiU6UYdN2O5eYm8Mbbxej85euHEXkw3WJRLNJCIE1GsPSXuMS2lYLsxZkSoXutlm86AxHNYvSgpp0E9DM739z2otXbss/kXAhRVV2sm5xUyILSErNCud5SVSszy4jef0hKyfMlvZHoylH9BqhsFcMJeuvLFxHTDDqyz8Du7IB9wjUnBnptlNQNYfz6hKS/eQ4ZykNYqjPl54ssMODBBoC9QwX/1g/Eufju+OMTN15cCf0MrJ1r6a80LFiXuGsUrM8hFu1qs9UogFtTgZvdiAlDoZ2oOh74k1Q=
