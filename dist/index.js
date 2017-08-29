@@ -2,6 +2,7 @@
 'use strict';
 var _fs = require('fs');var _fs2 = _interopRequireDefault(_fs);
 var _commander = require('commander');var _commander2 = _interopRequireDefault(_commander);
+require('console.table');
 var _Helpers = require('./classes/Helpers');var _Helpers2 = _interopRequireDefault(_Helpers);
 var _GDAX = require('./classes/GDAX');var _GDAX2 = _interopRequireDefault(_GDAX);
 var _CoinMarketCap = require('./classes/CoinMarketCap');var _CoinMarketCap2 = _interopRequireDefault(_CoinMarketCap);
@@ -79,7 +80,7 @@ action(function (fileLocation, options) {
     var portfolioData = {};
     keys.forEach(function (key) {
       portfolioData[key.toUpperCase()] = obj[key];
-      proms.push(getCurrecyData(market.toLowerCase(), key));
+      proms.push(getPortfolioData(market.toLowerCase(), key));
     }, this);
     Promise.all(proms).
     then(function (res) {
@@ -92,10 +93,10 @@ action(function (fileLocation, options) {
 
 /**
      * Returns appropriate promise as per market.
-     * @param {string} market 
-     * @param {string} currency 
+     * @param {string} market
+     * @param {string} currency
      */
-function getCurrecyData(market, currency) {
+function getPortfolioData(market, currency) {
   if (market === 'gdax') {
     return _GDAX2.default.getCurrency(currency);
   } else if (market === 'kraken') {
@@ -112,18 +113,19 @@ function getCurrecyData(market, currency) {
    * @param {Array} res : array of dictionaries.
    * @param {Dictionary} obj : portfolio dictinary.
    */
-function showPortfolio(res, obj) {
-  console.log('--------------------------------------------------------------------------------------------');
-  console.log('Symbol   Price     Acct. Val     %Change');
-  console.log('--------------------------------------------------------------------------------------------');
-  var total = 0;
-  res.forEach(function (currency) {
-    var currentVal = _Helpers2.default.round(obj[currency.symbol] * currency.price_usd);
-    total += Number(currentVal);
-    console.log(currency.symbol + '    $' + _Helpers2.default.round(currency.price_usd) + '    $' + currentVal + '      $' + currency.percent_change_24h + '%');
-  });
-  console.log('--------------------------------------------------------------------------------------------');
-  console.log('Total : $' + _Helpers2.default.round(total));
-}
+function showPortfolio(currencies, obj) {
+  var data = currencies.map(function (res) {
+    return {
+      symbol: res.symbol,
+      price: '$' + _Helpers2.default.round(res.price_usd),
+      value: '$' + _Helpers2.default.round(obj[res.symbol] * res.price_usd),
+      change: res.percent_change_24h + '%' };
 
+  });
+  var total = data.
+  map(function (res) {return Number(res.value.split('$')[1]);}).
+  reduce(function (sum, value) {return Number(sum) + value;}, 0);
+  console.table(data);
+  console.log('Total: $' + _Helpers2.default.round(total));
+}
 _commander2.default.parse(process.argv);

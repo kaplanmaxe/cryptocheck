@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import program from 'commander';
+import 'console.table';
 import Helpers from './classes/Helpers';
 import GDAX from './classes/GDAX';
 import CoinMarketCap from './classes/CoinMarketCap';
@@ -78,7 +79,7 @@ program
           const portfolioData = {};
           keys.forEach(key => {
               portfolioData[key.toUpperCase()] = obj[key];
-              proms.push(getCurrecyData(market.toLowerCase(), key));
+              proms.push(getPortfolioData(market.toLowerCase(), key));
           }, this);
           Promise.all(proms)
           .then(res => {
@@ -91,10 +92,10 @@ program
 
   /**
    * Returns appropriate promise as per market.
-   * @param {string} market 
-   * @param {string} currency 
+   * @param {string} market
+   * @param {string} currency
    */
-  function getCurrecyData(market, currency) {
+  function getPortfolioData(market, currency) {
       if (market === 'gdax') {
         return GDAX.getCurrency(currency);
       } else if (market === 'kraken') {
@@ -111,18 +112,19 @@ program
    * @param {Array} res : array of dictionaries.
    * @param {Dictionary} obj : portfolio dictinary.
    */
- function showPortfolio(res, obj) {
-  console.log('--------------------------------------------------------------------------------------------');
-  console.log('Symbol   Price     Acct. Val     %Change');
-  console.log('--------------------------------------------------------------------------------------------');
-  let total = 0;
-  res.forEach(currency => {
-      const currentVal = Helpers.round(obj[currency.symbol] * currency.price_usd);
-      total += Number(currentVal);
-      console.log(`${currency.symbol}    $${Helpers.round(currency.price_usd)}    $${currentVal}      $${currency.percent_change_24h}%`);
+ function showPortfolio(currencies, obj) {
+  const data = currencies.map(res => {
+    return {
+      symbol: res.symbol,
+      price: `$${Helpers.round(res.price_usd)}`,
+      value: `$${Helpers.round(obj[res.symbol] * res.price_usd)}`,
+      change: `${res.percent_change_24h}%`,
+    };
   });
-  console.log('--------------------------------------------------------------------------------------------');
-  console.log(`Total : $${Helpers.round(total)}`);
+  const total = data
+    .map(res => { return Number(res.value.split('$')[1]); })
+    .reduce((sum, value) => { return Number(sum) + value; }, 0);
+  console.table(data);
+  console.log(`Total: $${Helpers.round(total)}`);
  }
-
 program.parse(process.argv);
