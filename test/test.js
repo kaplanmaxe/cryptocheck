@@ -42,7 +42,7 @@ describe('Test portfolio functionality', () => {
         for (let i = 0; i < keys.length; i++) {
           assert.include(stdout, keys[i], 'Symbol was included in output');
         }
-        asset.include(stdout, "Market doesn't support:", "Assets not supported appears.");
+        assert.include(stdout, "Market doesn't support:", "Assets not supported appears.");
         done();
       });
     }).timeout(5000);

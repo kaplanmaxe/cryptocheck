@@ -6,7 +6,7 @@ import Helpers from './classes/Helpers';
 import GDAX from './classes/GDAX';
 import CoinMarketCap from './classes/CoinMarketCap';
 import Kraken from './classes/Kraken';
-import PortfolioResolver from "./classes/PortfolioResolver";
+import PortfolioResolver from './classes/PortfolioResolver';
 
 program.version('1.0.0');
 
@@ -72,24 +72,24 @@ program
   .action((fileLocation, options) => {
       const fullPath = `${process.cwd()}/${fileLocation}`;
       const market = options.market || 'cmc';
-      const portfolioResolver = new PortfolioResolver({market});
-      fs.readFile(fullPath, 'utf8', function(err, data) {
+      const portfolioResolver = new PortfolioResolver({ market });
+      fs.readFile(fullPath, 'utf8', (err, data) => {
           if (err) throw err;
           const obj = JSON.parse(data);
           portfolioResolver.getAssetValuesForPositions(obj).then(portfolio => {
             let total = 0;
             const formattedAssets = portfolio.assets.map(asset => {
               total += asset.value;
-              asset.price  = `$${Helpers.round(asset.price)}`;
-              asset.value  = `$${Helpers.round(asset.value)}`;
-              asset.change = asset.change ? `${asset.change}%` : "Unknown";
+              asset.price = `$${Helpers.round(asset.price)}`;
+              asset.value = `$${Helpers.round(asset.value)}`;
+              asset.change = asset.change ? `${asset.change}%` : 'Unknown';
               return asset;
             });
 
             console.table(formattedAssets);
 
             if (portfolio.notSupported.length > 0) {
-              const formatedNotSupportedTickers = portfolio.notSupported.join(", ");
+              const formatedNotSupportedTickers = portfolio.notSupported.join(', ');
               console.log(`Market doesn't support: ${formatedNotSupportedTickers}`);
             }
             console.log(`Total: $${Helpers.round(total)}`);

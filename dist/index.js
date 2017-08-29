@@ -83,14 +83,14 @@ action(function (fileLocation, options) {
         total += asset.value;
         asset.price = '$' + _Helpers2.default.round(asset.price);
         asset.value = '$' + _Helpers2.default.round(asset.value);
-        asset.change = asset.change ? asset.change + '%' : "Unknown";
+        asset.change = asset.change ? asset.change + '%' : 'Unknown';
         return asset;
       });
 
       console.table(formattedAssets);
 
       if (portfolio.notSupported.length > 0) {
-        var formatedNotSupportedTickers = portfolio.notSupported.join(", ");
+        var formatedNotSupportedTickers = portfolio.notSupported.join(', ');
         console.log('Market doesn\'t support: ' + formatedNotSupportedTickers);
       }
       console.log('Total: $' + _Helpers2.default.round(total));
