@@ -4,7 +4,7 @@
   "description": "Check prices of cryptocurrencies via command line",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "lint": "gulp lint"
   },
   "repository": {
@@ -34,17 +34,20 @@
   "homepage": "https://github.com/kaplanmaxe/cryptocheck#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-register": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.1",
     "eslint-config-kaplankomputing": "^1.0.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
-    "gulp-eslint": "^4.0.0"
+    "gulp-eslint": "^4.0.0",
+    "mocha": "^3.5.0"
   },
   "dependencies": {
     "commander": "^2.10.0",
     "console.table": "^0.9.1",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "verror": "^1.10.0"
   },
   "babel": {
     "presets": [
