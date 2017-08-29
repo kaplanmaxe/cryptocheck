@@ -67,6 +67,8 @@ XMR     $140.73    $1407.30   1.9%
 Total: $29175.36
 ```
 
+Example file is in `data/portfolio.json`.
+
 You can check for specific market by providing option as below, default market is coinmarketcap. You can change it to gdax/kraken. Note: Not all currencies are supported in all markets :(
 
 ```    
