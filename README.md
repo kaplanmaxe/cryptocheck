@@ -33,6 +33,18 @@ cryptocheck cmc sc
 cryptocheck cmc xrp
 ```
 
+Portfolio Check:
+
+To get overview of your portfolio, add all your currencies in json file (sample file is in data/portfolio.json), and run following command.
+```
+cryptocheck portfolio <path-to-json-file>
+```
+You can check for specific market by providing option as below, default market is coinmarketcap. You can change it to gdax/kraken. Note: Not all currencies are supported in all markets :(
+
+```    
+cryptocheck portfolio -m cmc <path-to-json-file>
+```
+
 ### Development
 
 PRs are more than welcome! Just make sure to run gulp while developing to transpile and follow ESLint rules.
