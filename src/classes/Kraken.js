@@ -6,7 +6,12 @@ export default class Kraken {
    *
    * @param {string} asset Asset to check price of
    */
-  static getCurrency(asset, currency = 'USD') {
+  static getCurrency(rawAsset, currency = 'USD') {
+    if (rawAsset == "BTC") {
+      var asset = "XBT";
+    } else {
+      var asset = rawAsset;
+    }
     return new Promise((resolve, reject) => {
       request(`https://api.kraken.com/0/public/Ticker?pair=${asset}${currency}`, (err, response, body) => {
         const output = JSON.parse(body);

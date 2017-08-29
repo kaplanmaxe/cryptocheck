@@ -6,7 +6,12 @@ Kraken = function () {function Kraken() {_classCallCheck(this, Kraken);}_createC
                                                                                                                            *
                                                                                                                            * @param {string} asset Asset to check price of
                                                                                                                            */value: function getCurrency(
-    asset) {var currency = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'USD';
+    rawAsset) {var currency = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'USD';
+      if (rawAsset == "BTC") {
+        var asset = "XBT";
+      } else {
+        var asset = rawAsset;
+      }
       return new Promise(function (resolve, reject) {
         (0, _request2.default)('https://api.kraken.com/0/public/Ticker?pair=' + asset + currency, function (err, response, body) {
           var output = JSON.parse(body);
