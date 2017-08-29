@@ -15,9 +15,9 @@ Kraken = function () {function Kraken() {_classCallCheck(this, Kraken);}_createC
       return new Promise(function (resolve, reject) {
         (0, _request2.default)('https://api.kraken.com/0/public/Ticker?pair=' + asset + currency, function (err, response, body) {
           var output = JSON.parse(body);
-          if (output.error.length > 0) return reject('Asset not found');
+          if (output.error.length > 0) return reject('Asset not found.');
           // Kraken's output is a little weird. Always take the first object key.
-          resolve(output.result[Object.keys(output.result)[0]].c[0]);
+          resolve({ symbol: rawAsset, price_usd: output.result[Object.keys(output.result)[0]].c[0] });
         });
       });
     } }]);return Kraken;}();exports.default = Kraken;

@@ -33,7 +33,7 @@ program
     const currencyData = getCurrencyData(currency, 'gdax');
     GDAX.getCurrency(currencyData.symbol)
     .then(res => {
-      console.log(`${currencyData.name} (${currency.toUpperCase()}): $${Helpers.round(res)}`);
+      console.log(`${currencyData.name} (${currency.toUpperCase()}): $${Helpers.round(res.price_usd)}`);
     }, err => {
       console.log(err);
     });
@@ -58,7 +58,7 @@ program
       const currencyData = getCurrencyData(currency, 'kraken');
       Kraken.getCurrency(currencyData.symbol)
       .then(res => {
-        console.log(`${currencyData.name} (${currency.toUpperCase()}): $${Helpers.round(res)}`);
+        console.log(`${currencyData.name} (${currency.toUpperCase()}): $${Helpers.round(res.price_usd)}`);
       }, err => {
         console.log(err);
       });
