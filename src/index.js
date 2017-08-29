@@ -6,6 +6,7 @@ import Helpers from './classes/Helpers';
 import GDAX from './classes/GDAX';
 import CoinMarketCap from './classes/CoinMarketCap';
 import Kraken from './classes/Kraken';
+import PortfolioResolver from "./classes/PortfolioResolver";
 
 program.version('1.0.0');
 
@@ -71,60 +72,30 @@ program
   .action((fileLocation, options) => {
       const fullPath = `${process.cwd()}/${fileLocation}`;
       const market = options.market || 'cmc';
+      const portfolioResolver = new PortfolioResolver({market});
       fs.readFile(fullPath, 'utf8', function(err, data) {
           if (err) throw err;
           const obj = JSON.parse(data);
-          const keys = Object.keys(obj);
-          const proms = [];
-          const portfolioData = {};
-          keys.forEach(key => {
-              portfolioData[key.toUpperCase()] = obj[key];
-              proms.push(getPortfolioData(market.toLowerCase(), key));
-          }, this);
-          Promise.all(proms)
-          .then(res => {
-             showPortfolio(res, portfolioData);
-          }, error => {
-             console.log(`Errored ${error}`);
+          portfolioResolver.getAssetValuesForPositions(obj).then(portfolio => {
+            let total = 0;
+            const formattedAssets = portfolio.assets.map(asset => {
+              total += asset.value;
+              asset.price  = `$${Helpers.round(asset.price)}`;
+              asset.value  = `$${Helpers.round(asset.value)}`;
+              asset.change = asset.change ? `${asset.change}%` : "Unknown";
+              return asset;
+            });
+
+            console.table(formattedAssets);
+
+            if (portfolio.notSupported.length > 0) {
+              const formatedNotSupportedTickers = portfolio.notSupported.join(", ");
+              console.log(`Market doesn't support: ${formatedNotSupportedTickers}`);
+            }
+            console.log(`Total: $${Helpers.round(total)}`);
+          }).catch(message => {
+            console.log(`Errored: ${message}`);
           });
       });
   });
-
-  /**
-   * Returns appropriate promise as per market.
-   * @param {string} market
-   * @param {string} currency
-   */
-  function getPortfolioData(market, currency) {
-      if (market === 'gdax') {
-        return GDAX.getCurrency(currency);
-      } else if (market === 'kraken') {
-        return Kraken.getCurrency(currency);
-      } else if (market === 'cmc') {
-        return CoinMarketCap.getCurrency(currency);
-      }
-
-      return Promise.reject(`Market ${market} not supported`);
-  }
-
-  /**
-   * Prints portfolio
-   * @param {Array} res : array of dictionaries.
-   * @param {Dictionary} obj : portfolio dictinary.
-   */
- function showPortfolio(currencies, obj) {
-  const data = currencies.map(res => {
-    return {
-      symbol: res.symbol,
-      price: `$${Helpers.round(res.price_usd)}`,
-      value: `$${Helpers.round(obj[res.symbol] * res.price_usd)}`,
-      change: `${res.percent_change_24h}%`,
-    };
-  });
-  const total = data
-    .map(res => { return Number(res.value.split('$')[1]); })
-    .reduce((sum, value) => { return Number(sum) + value; }, 0);
-  console.table(data);
-  console.log(`Total: $${Helpers.round(total)}`);
- }
 program.parse(process.argv);
