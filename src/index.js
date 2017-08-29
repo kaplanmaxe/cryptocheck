@@ -83,7 +83,7 @@ program
           }, this);
           Promise.all(proms)
           .then(res => {
-                showPortfolio(res, portfolioData);
+             showPortfolio(res, portfolioData);
           }, error => {
              console.log(`Errored ${error}`);
           });
@@ -104,7 +104,7 @@ program
         return CoinMarketCap.getCurrency(currency);
       }
 
-      return null;
+      return Promise.reject("Market ${market} not supported");
   }
 
   /**
