@@ -79,8 +79,9 @@ cryptocheck portfolio -m cmc <path-to-json-file>
 
 PRs are more than welcome! Just make sure to run gulp while developing to transpile and follow ESLint rules.
 
-- `npm run lint`
 - `npm run test` (You will need to run `npm link` first)
+
+Occasionally, tests will timeout. If that is the case, restart the build in travis and let tests run again.
 
 ### Authors
 

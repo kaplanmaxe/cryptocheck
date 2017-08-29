@@ -40,4 +40,4 @@ describe('Test portfolio functionality', () => {
 lint([
   'src/**/*.js',
   '!src/CurrencyMap.js'
-]);
+], { timeout: 5000 });
