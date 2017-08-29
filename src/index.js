@@ -104,7 +104,7 @@ program
         return CoinMarketCap.getCurrency(currency);
       }
 
-      return Promise.reject("Market ${market} not supported");
+      return Promise.reject(`Market ${market} not supported`);
   }
 
   /**
