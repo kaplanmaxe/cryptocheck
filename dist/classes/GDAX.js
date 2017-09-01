@@ -16,7 +16,7 @@ GDAX = function () {function GDAX() {_classCallCheck(this, GDAX);}_createClass(G
         (0, _request2.default)({ url: 'https://api.gdax.com/products/' + currency + '-USD/ticker', headers: headers }, function (err, response, body) {
           if (response.statusCode === 404) reject('Asset not found.');
           var output = JSON.parse(body);
-          resolve(output.price);
+          resolve({ symbol: currency, price_usd: output.price });
         });
       });
     } }]);return GDAX;}();exports.default = GDAX;

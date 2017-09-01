@@ -35,6 +35,18 @@ describe('Test portfolio functionality', () => {
       done();
     });
   }).timeout(5000);
+
+  context("when an explicit market is passed", () => {
+    it("uses that market", done => {
+      exec('cryptocheck portfolio ./data/portfolio.json -m gdax', (err, stdout) => {
+        for (let i = 0; i < keys.length; i++) {
+          assert.include(stdout, keys[i], 'Symbol was included in output');
+        }
+        assert.include(stdout, "Market doesn't support:", "Assets not supported appears.");
+        done();
+      });
+    }).timeout(5000);
+  });
 });
 
 lint([

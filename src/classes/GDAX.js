@@ -16,7 +16,7 @@ export default class GDAX {
       request({ url: `https://api.gdax.com/products/${currency}-USD/ticker`, headers }, (err, response, body) => {
         if (response.statusCode === 404) reject('Asset not found.');
         const output = JSON.parse(body);
-        resolve(output.price);
+        resolve({ symbol: currency, price_usd: output.price });
       });
     });
   }
