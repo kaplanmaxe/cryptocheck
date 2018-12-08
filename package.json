@@ -47,7 +47,7 @@
   "dependencies": {
     "commander": "^2.10.0",
     "console.table": "^0.9.1",
-    "request": "^2.81.0",
+    "request": "^2.84.0",
     "verror": "^1.10.0"
   },
   "babel": {
